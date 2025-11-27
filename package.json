@@ -43,7 +43,7 @@
                 },
                 "autoHide.autoHideAuxiliaryBar": {
                     "type": "boolean",
-                    "default": true,
+                    "default": false,
                     "description": "Hide the auxiliary bar (second side bar) when the user clicks into a text editor."
                 },
                 "autoHide.autoHidePanel": {
