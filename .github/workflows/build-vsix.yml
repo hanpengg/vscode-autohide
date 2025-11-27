@@ -1,0 +1,37 @@
+name: Build VSIX
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Compile extension
+        run: npm run vscode:prepublish
+
+      - name: Package VSIX
+        run: |
+          VSIX_NAME=$(node -p "const pkg=require('./package.json'); pkg.name + '-' + pkg.version + '.vsix'")
+          echo "VSIX_NAME=$VSIX_NAME" >> "$GITHUB_ENV"
+          npx --yes @vscode/vsce package -o "$VSIX_NAME"
+
+      - name: Upload VSIX artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: vscode-autohide-vsix
+          path: ${{ env.VSIX_NAME }}
